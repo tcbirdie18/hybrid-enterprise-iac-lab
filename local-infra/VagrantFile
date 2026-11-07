@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.boot_timeout = 600
+  config.vm.box = "bento/rockylinux-9"
+
+  # Mount host transfer drop to emulate offline ingest
+  config.vm.synced_folder "../transfer_drop", "/opt/transfer_drop", SharedFoldersEnableSymlinksCreate: false
+
+  # Node 1: Core Services (Nexus OSS, Local DNS, NTP)
+  config.vm.define "core-services" do |core|
+    core.vm.hostname = "core-services.lab"
+    core.vm.network "private_network", ip: "192.168.56.10"
+    core.vm.provider "virtualbox" do |vb|
+      vb.name = "lab-core-services"
+      vb.memory = 4096
+      vb.cpus = 2
+    end
+  end
+
+  # Node 2: SIEM Node (Elasticsearch 8.x & Kibana SOC)
+  config.vm.define "siem" do |siem|
+    siem.vm.hostname = "siem.lab"
+    siem.vm.network "private_network", ip: "192.168.56.20"
+    siem.vm.provider "virtualbox" do |vb|
+      vb.name = "lab-siem"
+      vb.memory = 12288
+      vb.cpus = 4
+    end
+  end
+
+  # Node 3: Kubernetes Orchestration Target (k3s / Containers)
+  config.vm.define "k8s-node" do |k8s|
+    k8s.vm.hostname = "k8s-node.lab"
+    k8s.vm.network "private_network", ip: "192.168.56.30"
+    k8s.vm.provider "virtualbox" do |vb|
+      vb.name = "lab-k8s-node"
+      vb.memory = 16384
+      vb.cpus = 4
+    end
+  end
+end

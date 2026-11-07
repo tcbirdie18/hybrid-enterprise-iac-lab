@@ -1,0 +1,25 @@
+# Hypervisor & Local VM State
+.vagrant/
+*.log
+*.vdi
+*.vmdk
+
+# Ingestion Transfer Drop (Prevents committing GBs of RPMs/tarballs)
+transfer_drop/*
+!transfer_drop/.gitkeep
+
+# IaC Runtime State & Secrets
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+*.pem
+*.key
+*.id_rsa
+.env
+
+# Python & AI Agent Artifacts
+__pycache__/
+*.pyc
+venv/
+.venv/
